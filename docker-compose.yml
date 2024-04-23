@@ -7,3 +7,14 @@ services:
       - ./:/app:delegated
     ports:
       - '8000:80'
+
+  db:
+    image: postgres:15
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=synergy
+      - POSTGRES_USER=synergy_user
+      - POSTGRES_PASSWORD=1234
+    volumes:
+      - ./dbdata:/var/lib/postgresql/data
