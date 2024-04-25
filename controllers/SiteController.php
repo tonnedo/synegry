@@ -76,6 +76,18 @@ class SiteController extends Controller
             'posts' => $posts,
         ]);
     }
+	
+	public function actionPosts()
+	{
+		$posts = PostModel::find()
+			->innerJoin('subscriptions', 'posts.user_id = subscriptions.user_id')
+			->where(['subscriptions.subscriber_id' => Yii::$app->user->getId()])
+			->all();
+		
+		return $this->render('index', [
+			'posts' => $posts,
+		]);
+	}
 
     /**
      * Login action.

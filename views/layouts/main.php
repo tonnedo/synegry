@@ -47,6 +47,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
         $menuItems[] = ['label' => 'Регистрация', 'url' => ['/site/registration']];
         $menuItems[] = ['label' => 'Вход', 'url' => ['/site/login']];
     } else {
+		$menuItems[] = ['label' => 'Подписки', 'url' => ['/site/posts']];
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post')
             . Html::submitButton(

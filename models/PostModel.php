@@ -56,6 +56,8 @@ class PostModel extends ActiveRecord
                     $this->unlink('tags', $tagItem, true);
                     $this->link('tags', $tagItem);
                 }
+	
+				\Yii::$app->session->setFlash('success', 'Пост создан');
                 return true;
             }
         }
