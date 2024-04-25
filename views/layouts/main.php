@@ -40,7 +40,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
         ['label' => 'Главная', 'url' => ['/site/index']],
         ['label' => 'О нас', 'url' => ['/site/about']],
         ['label' => 'Контакты', 'url' => ['/site/contact']],
-        ['label' => 'Создать пост', 'url' => ['/site/create-post']],
+        ['label' => 'Создать пост', 'url' => ['/post/create']],
     ];
 
     if (Yii::$app->user->isGuest) {

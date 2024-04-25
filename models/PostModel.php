@@ -3,9 +3,12 @@
 namespace app\models;
 
 use yii\db\ActiveRecord;
+use yii\db\Query;
 
 class PostModel extends ActiveRecord
 {
+    public $tagsData;
+
     public static function tableName()
     {
         return '{{%posts}}';
@@ -15,6 +18,7 @@ class PostModel extends ActiveRecord
     {
         return [
             [['user_id', 'title', 'content', 'public'], 'required'],
+            [['tagsData'], 'safe']
         ];
     }
 
@@ -34,15 +38,23 @@ class PostModel extends ActiveRecord
             ->viaTable('post_tag', ['post_id' => 'id']);
     }
 
-    public function savePostWithTags($tags)
+    public function getUser()
+    {
+        return $this->hasOne(UserModel::class, ['id' => 'user_id']);
+    }
+
+    public function savePostWithTags($tag)
     {
         if ($this->validate()) {
             if ($this->save()) {
-                foreach ($tags as $tagId) {
-                    $tag = TagModel::findOne($tagId);
-                    if ($tag) {
-                        $this->link('tags', $tag);
-                    }
+                \Yii::$app->db->createCommand()
+                    ->delete('post_tag', ['post_id' => $this->id])
+                    ->execute();
+
+                $tagItem = TagModel::findOne($tag);
+                if ($tagItem) {
+                    $this->unlink('tags', $tagItem, true);
+                    $this->link('tags', $tagItem);
                 }
                 return true;
             }
@@ -58,5 +70,14 @@ class PostModel extends ActiveRecord
             }
         }
         return false;
+    }
+
+    public function setTagsDropdownData(PostModel $model, string $fieldName): void
+    {
+        $postTag = (new Query)->from('post_tag')->where(['post_id' => $this->id])->all();
+
+        foreach ($postTag as $tag) {
+            $model->$fieldName[] = $tag['tag_id'];
+        }
     }
 }

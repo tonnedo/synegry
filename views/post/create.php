@@ -40,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     <?= $form->field($postModel, 'public')->checkbox() ?>
 
-                    <?= $form->field($tagModel, 'name')->dropDownList($tagModel->fields()) ?>
+                    <?= $form->field($tagModel, 'name')->dropDownList(\yii\helpers\ArrayHelper::map($tagModel::find()->all(), 'id', 'name')) ?>
 
                     <div class="form-group">
                         <?= Html::submitButton('Submit', ['class' => 'btn btn-primary', 'name' => 'post-button']) ?>

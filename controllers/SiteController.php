@@ -2,16 +2,16 @@
 
 namespace app\controllers;
 
+use app\models\ContactForm;
+use app\models\LoginForm;
 use app\models\PostModel;
 use app\models\RegistrationForm;
 use app\models\TagModel;
 use Yii;
 use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\Response;
-use yii\filters\VerbFilter;
-use app\models\LoginForm;
-use app\models\ContactForm;
 
 class SiteController extends Controller
 {
@@ -64,7 +64,17 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $posts = PostModel::find();
+        if (Yii::$app->user->isGuest) {
+            $posts = $posts->where(['public' => true]);
+        }
+        $posts = $posts->with('tags')
+            ->with('user')
+            ->all();
+
+        return $this->render('index', [
+            'posts' => $posts,
+        ]);
     }
 
     /**
@@ -143,30 +153,6 @@ class SiteController extends Controller
 
         return $this->render('registration', [
             'model' => $model,
-        ]);
-    }
-
-    public function actionCreatePost()
-    {
-//        echo '<pre>';
-//        var_dump(Yii::$app->user);
-//        die;
-        $postModel = new PostModel();
-        $tagModel = new TagModel();
-
-        if ($postModel->load(Yii::$app->request->post())) {
-            if ($postModel->savePost()) {
-                $tags = [1, 2]; // ID тегов
-                $postModel->savePostWithTags($tags);
-                echo 'Пост с тегами сохранен успешно!';
-            } else {
-                echo 'Ошибка при сохранении поста.';
-            }
-        }
-
-        return $this->render('posts', [
-            'postModel' => $postModel,
-            'tagModel' => $tagModel,
         ]);
     }
 }
