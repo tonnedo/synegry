@@ -8,6 +8,7 @@ use app\models\PostModel;
 use app\models\RegistrationForm;
 use app\models\TagModel;
 use Yii;
+use yii\data\Sort;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
@@ -64,28 +65,73 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+		$sort = new Sort([
+			'attributes' => [
+				'title' => [
+					'label' => 'Заголовок',
+				],
+				'user_id' => [
+					'label' => 'Автор',
+				],
+				'tags' => [
+					// Используем callable для сортировки по тегу
+					'asc' => ['tags.name' => SORT_ASC],
+					'desc' => ['tags.name' => SORT_DESC],
+					// Подписываем атрибут для вывода в интерфейсе
+					'label' => 'Тег',
+					// Устанавливаем значение по умолчанию
+					'default' => SORT_ASC,
+				],
+			],
+		]);
+		
         $posts = PostModel::find();
         if (Yii::$app->user->isGuest) {
             $posts = $posts->where(['public' => true]);
         }
-        $posts = $posts->with('tags')
-            ->with('user')
-            ->all();
+        $posts = $posts
+			->joinWith(['tags', 'user'])
+			->orderBy($sort->orders)
+			->all();
 
         return $this->render('index', [
             'posts' => $posts,
+			'sort' => $sort,
         ]);
     }
 	
 	public function actionPosts()
 	{
+		$sort = new Sort([
+			'attributes' => [
+				'title' => [
+					'label' => 'Заголовок',
+				],
+				'user_id' => [
+					'label' => 'Автор',
+				],
+				'tags' => [
+					// Используем callable для сортировки по тегу
+					'asc' => ['tags.name' => SORT_ASC],
+					'desc' => ['tags.name' => SORT_DESC],
+					// Подписываем атрибут для вывода в интерфейсе
+					'label' => 'Тег',
+					// Устанавливаем значение по умолчанию
+					'default' => SORT_ASC,
+				],
+			],
+		]);
+		
 		$posts = PostModel::find()
 			->innerJoin('subscriptions', 'posts.user_id = subscriptions.user_id')
 			->where(['subscriptions.subscriber_id' => Yii::$app->user->getId()])
+			->joinWith(['tags', 'user'])
+			->orderBy($sort->orders)
 			->all();
 		
 		return $this->render('index', [
 			'posts' => $posts,
+			'sort' => $sort,
 		]);
 	}
 
