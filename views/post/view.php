@@ -1,6 +1,7 @@
 <?php
 
 use yii\bootstrap5\Html;
+use yii2mod\comments\widgets\Comment;
 
 $this->title = 'Детальная поста';
 $this->params['breadcrumbs'][] = $this->title;
@@ -22,5 +23,9 @@ $this->params['breadcrumbs'][] = $this->title;
 			echo Html::a('Подписаться', ['post/subscribe', 'user_id' => $post->user_id, 'subscriber_id' => Yii::$app->user->getId()], ['class' => 'btn btn-primary']);
 		}
 	}
+    
+    echo Comment::widget([
+		'model' => $post,
+	]);
 	?>
 </div>

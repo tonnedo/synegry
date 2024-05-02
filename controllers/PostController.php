@@ -7,12 +7,14 @@ use app\models\SubscriberModel;
 use app\models\TagModel;
 use yii\web\NotFoundHttpException;
 use yii\widgets\ActiveForm;
+use yii2mod\comments\widgets\Comment;
 
 class PostController extends \yii\web\Controller
 {
 	public function actionView($id)
 	{
-		$post = PostModel::findOne($id);
+//		$post = PostModel::findOne($id);
+		$post = PostModel::find()->where(['id' => $id])->one();
 		
 		if (!$post) {
 			throw new NotFoundHttpException('Пост не найден');
