@@ -20,7 +20,9 @@ $this->params['breadcrumbs'][] = $this->title;
         if($isSubscribe = \app\models\SubscriberModel::findOne(['user_id' => $post->user_id, 'subscriber_id' => Yii::$app->user->getId()])) {
 			echo Html::a('Отписаться', ['post/unsubscribe', 'user_id' => $post->user_id, 'subscriber_id' => Yii::$app->user->getId()], ['class' => 'btn btn-danger']);
 		} else {
-			echo Html::a('Подписаться', ['post/subscribe', 'user_id' => $post->user_id, 'subscriber_id' => Yii::$app->user->getId()], ['class' => 'btn btn-primary']);
+            if(!Yii::$app->user->isGuest) {
+				echo Html::a('Подписаться', ['post/subscribe', 'user_id' => $post->user_id, 'subscriber_id' => Yii::$app->user->getId()], ['class' => 'btn btn-primary']);
+			}
 		}
 	}
     
