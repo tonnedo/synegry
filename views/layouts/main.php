@@ -38,13 +38,13 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
     ]);
     $menuItems = [
         ['label' => 'Главная', 'url' => ['/site/index']],
-        ['label' => 'Создать пост', 'url' => ['/post/create']],
     ];
 
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Регистрация', 'url' => ['/site/registration']];
         $menuItems[] = ['label' => 'Вход', 'url' => ['/site/login']];
     } else {
+		$menuItems[] = ['label' => 'Создать пост', 'url' => ['/post/create']];
 		$menuItems[] = ['label' => 'Подписки', 'url' => ['/site/posts']];
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post')
